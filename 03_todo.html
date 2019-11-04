@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+    body {
+        text-align: center;
+    }
+    #app {
+        margin-top: 20vh;
+    }
+    .completed {
+        color: gray;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!--
+            디렉티브
+            v-for : 반복문
+            v-if: 조건문
+            같이 작성을 하게 되면, 매 반복에 if를 체크
+        -->
+        <img v-bind:src="logo"
+            alt="" with="200px"> <br>
+        <input type="text" v-model="newTodo" v-on:keyup.enter="addTodo"> <br>
+        <li v-for="todo in todos" v-if="!todo.completed" v-on:click="toggleCompleted(todo)"> 
+            {{ todo.content }}
+        </li>
+        <li v-else v-on:click="toggleCompleted(todo)">
+            {{ todo.content }}
+        [완료!]</li>
+    </div>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                newTodo: '',
+                logo: 'https://i.pinimg.com/originals/a0/42/c8/a042c8760a95bc2a4f7bd639690b45df.png',
+                todos: [
+                {
+                    content: '수업 열심히 듣기',
+                    completed: true
+                },
+                {
+                    content: '퇴근 하기',
+                    completed: false
+                },
+                {
+                    content: '재활용 하기',
+                    completed: false
+                },                
+                {
+                    content: '방청소하기',
+                    completed: false
+                },                
+                {
+                    content: '저녁먹기',
+                    completed: false
+                },                
+                {
+                    content: '일찍 자기',
+                    completed: false
+                }
+            ]
+        },
+        methods: {
+            toggleCompleted: function(todo){
+                console.log(todo)
+                todo.completed = !todo.completed
+            },
+            addTodo: function() {
+                this.todos.push(
+                    {content: this.newTodo, completed: false}
+                )
+                this.newTodo = ''
+            }
+        }
+    })
+    </script>
+</body>
+</html>
