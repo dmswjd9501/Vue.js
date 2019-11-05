@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+        <!-- 반복문 돌려서 li 태그로 이름 출력
+            for
+                if (같은 라인, 우선순위가 for이 높음)
+        -->
+        <li v-for="member in members" v-if="member.gender === 'M'">
+            {{ member.name }} ?
+        </li>
+        <li v-else>{{ member.name }}</li>
+        <!-- v model 
+            : data 내에 추가하기 반드시 필요!
+        -->
+        <input type="text" v-model="userText">
+        <p>사용자가 입력 중.....</p>{{ userText }}
+        <!-- 속성값 : v-bind -->
+        <img v-bind:src="url">
+        <img :src="url">
+        <!-- 이벤트 -->
+        <button v-on:click="countUp">++++</button>
+        <p>{{ counter }}</p>
+        <button @click="countDown">----</button>
+        <!-- computed vs methods -->
+        <h2>methods: {{ dateMethods() }}</h2>   <!-- 함수를 실행, 모든 data 변경시마다 계속 호출-->
+        <h2>computed: {{ dateComputed }}</h2>   <!-- 함수의 실행 결과를 계산된(computed) -->
+    </div>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            // 데이터는 오브젝트로 존재한다
+            data: { // app.$data
+                url: 'data:https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwjjj8Sz6NHlAhUXat4KHfpZC9kQjRx6BAgBEAQ&url=http%3A%2F%2Fwww.hani.co.kr%2Farti%2Fanimalpeople%2Fcompanion_animal%2F909434.html&psig=AOvVaw3di4skDbMxOlkJ-Mb2VTvh&ust=1572999956494884',
+                message: '하이욤!',  // app.message
+                members: [
+                {name: '은정', gender:'F'},
+                {name: '상용', gender:'M'},
+                {name: '선정', gender:'F'}             
+                ],
+                userText: '',
+                counter: 0
+            },
+            methods: {
+                countUp: function() {
+                    this.counter++
+                    console.log(this.counter)
+                },
+                countDown: function() {
+                    this.counter--
+                    console.log(this.counter)
+                },
+                dateMethods: function() {
+
+                }
+            },
+            computed: {
+                Date.now()
+            }
+        })
+    </script>
+</body>
+</html>
