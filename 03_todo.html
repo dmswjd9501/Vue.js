@@ -67,6 +67,14 @@
         -->
     </div>
     <script>
+        const todoStorage = {
+            fetch() {
+                return JSON.parse(localStorage.getItem('vue-todo'))
+            },
+            set(todos) {
+                localStorage.setItem('vue-todo', JSON.stringify(todos))
+            } 
+        }
         const app = new Vue({
             el: '#app',
             data: {
@@ -147,8 +155,19 @@
                         return this.todos   // 'all'
                     }
                 }
+            },
+            watch: {    // 특정 data의 변경을 추적, 변경
+                todos:{ // todo를 바라봐!
+                    handler: function() {
+                        todoStorage.set(this.todos)
+                    }
+                }
+            },
+            mounted : function() {  // vue 시작되는 시점
+                console.log('아침이 되었습니다.')
+                this.todos = todoStorage.fetch()
             }
-    })
+        })
     </script>
 </body>
 </html>
