@@ -7,26 +7,25 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <style>
-        body {
-            text-align: center;
-        }
-        #app {
-            margin-top: 20vh;
-        }
-        .completed {
-            color: gray;
-            text-decoration-line: line-through;
-            
-        }
-        li {
-            cursor: pointer;
-        }
-        .lightblue {
-            color: lightblue;
-        }
-        .pink {
-            color: pink;
-        }
+    body {
+        text-align: center;
+    }
+    #app {
+        margin-top: 20vh;
+    }
+    .completed {
+        color: gray;
+        text-decoration-line: line-through;
+    }
+    li {
+        cursor: pointer;
+    }
+    .blue {
+        color: blue;
+    }
+    .pink {
+        color: pink;
+    }
     </style>
 </head>
 <body>
@@ -39,13 +38,13 @@
         -->
         <img v-bind:src="logo"
             alt="" width="200px"><br>
-        <!-- <h1 class="{lightblue: isLightBlue, pink: !isLightBlue}">은정이의 TodoList</h1> -->
-        <h2 :style="{color: color, 'font-size': font}">은정이의 Todo List</h2>
+        <!-- <h1 class="{lightblue: islightBlue, pink: !islightBlue}">은정이의 TodoList</h1> -->
+        <h2 :style="{color: color, 'font-size': font}">{{ time }}</h2>
         <button @click="allCompleted">Complete</button>
         <button @click="clearCompleted">Clear</button><br>
         <input type="text" v-model="newTodo" v-on:keyup.enter="addTodo"><br>
         <select v-model="status">
-            <option value="all">모두보기</option>
+            <option value="all">모두 보기</option>
             <option value="active">할 일</option>
             <option value="complete">완료</option>
         </select>
@@ -56,116 +55,92 @@
             <input type="checkbox" v-model="todo.completed">
             {{ todo.content }}
         </li>
-
-
-        <!-- 
-        <li v-else v-on:click="toggleCompleted(todo)" :class="">
-            <del>
-                {{ todo.content }}
-            </del>
-        </li>
-        -->
+    <!-- <li v-else v-on:click="toggleCompleted(todo)">
+      <del>
+        {{ todo.content }}
+      </del>
+    </li> -->
     </div>
     <script>
         const todoStorage = {
-            fetch() {
-                return JSON.parse(localStorage.getItem('vue-todo'))
+            fetch() {   // 가져오는 작업(JSON => object 리턴)
+                return JSON.parse(localStorage.getItem('vue-todo') || "[]")
             },
-            set(todos) {
+            set(todos) { // 로컬스토리지에 저장하는 작업 (object -> JSON)
                 localStorage.setItem('vue-todo', JSON.stringify(todos))
             } 
         }
         const app = new Vue({
             el: '#app',
             data: {
+                time: '',
                 color: 'purple',
                 font: '30px',
-                status:'',  // 'active', 'completed (true) '
+                status:'all', // 'active'(false), 'complete'(true)
                 newTodo: '',
                 logo: 'https://i.pinimg.com/originals/a0/42/c8/a042c8760a95bc2a4f7bd639690b45df.png',
                 todos: [
-                {
-                    id: 1,
-                    content: '수업 열심히 듣기',
-                    completed: true
+                ]
+            },
+            methods: {
+                toggleCompleted: function(todo){
+                    todo.completed = !todo.completed
                 },
-                {
-                    id: 2,
-                    content: '퇴근 하기',
-                    completed: false
+                addTodo: function() {
+                    this.todos.push(
+                        {
+                            id: Date.now(),
+                            content: this.newTodo,
+                            completed: false
+                        }
+                    )
+                    this.newTodo = ''
                 },
-                {
-                    id: 3,
-                    content: '재활용 하기',
-                    completed: false
-                },                
-                {
-                    id: 4,
-                    content: '방청소하기',
-                    completed: false
-                },                
-                {
-                    id: 5,
-                    content: '저녁먹기',
-                    completed: false
-                },                
-                {
-                    id: 6,
-                    content: '일찍 자기',
-                    completed: false
+                allCompleted: function() {
+                    this.todos.forEach(todo => {
+                        todo.completed = true
+                    })
+                },
+                clearCompleted() {
+                    this.todos = this.todos.filter(todo => {
+                        return !todo.completed
+                    })
+                },
+                updateTime() {
+                const date = new Date()
+                this.time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
                 }
-                ],
-
-            },
-        methods: {
-            toggleCompleted: function(todo){
-                console.log(todo)
-                todo.completed = !todo.completed
-            },
-            addTodo: function() {
-                this.todos.push(
-                    {
-                        id: Date.now(),
-                        content: this.newTodo,
-                        completed: false
-                    }
-                )
-                this.newTodo = ''
-            },
-            allCompleted: function() {
-                this.todos.forEach(todo => {
-                    todo.completed = true
-                })
-            },
-            clearCompleted() {
-                this.todos = this.todos.filter(todo => {
-                    return !todo.completed
-                })
-            },
-            
             },
             computed: {
                 todosByStatus() {
                     console.log('!!!!!')
+                    // this.status 1) 'active'
                     if (this.status === 'active') {
                         return this.todos.filter(todo => !todo.completed)
                     } else if (this.status === 'complete') {
-                        return this.todos.filter(todo => this.completed)
+                        return this.todos.filter(todo => todo.completed)
                     } else {
                         return this.todos   // 'all'
                     }
                 }
             },
-            watch: {    // 특정 data의 변경을 추적, 변경
+            watch: {    // 특정 data의 변경을 추적, 반응
                 todos:{ // todo를 바라봐!
                     handler: function() {
                         todoStorage.set(this.todos)
-                    }
+                    },
+                    deep: true  // 원소자체 변경, 그 원소의 변경
                 }
             },
             mounted : function() {  // vue 시작되는 시점
                 console.log('아침이 되었습니다.')
+                this.updateTime()
+                // 현재 시간
                 this.todos = todoStorage.fetch()
+                this.$options.myInterval = setInterval(this.updateTime, 1000)
+            },
+            beforeDestroy: function() {
+                clearInterval(this.$options.myInterval)
             }
         })
     </script>
