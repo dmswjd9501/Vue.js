@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <style>
+    body {
+      text-align: center;
+    }
+
+    h1 {
+      color: skyblue;
+    }
+
+    h2 {
+      color: gray;
+    }
+
+    li {
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h1>은정이의 Todo List</h1>
+    <img v-bind:src="logo" alt="" width="500px"><br>
+    <todo-list category="취업준비"></todo-list>
+    <todo-list category="싸피"></todo-list>
+    <todo-list category="개인"></todo-list>
+  </div>
+  <script>
+    // 전역 컴포넌트 선언부 => 반복되는 것 사용 가능
+    Vue.component('todo-list', {
+      template: `<div class="todo-list">
+      <h2>{{ category }}</h2>
+      <input v-model="newTodo" type="text" >
+      <button @click="addTodo">추가하기</button>
+      <li v-for="todo in todos" :key="todo.id">
+        {{ todo.content }}
+        <button @click="removeTodo(todo.id)">삭제하기</button>
+        <!-- 어떤애를 삭제할 지 모르기때문에 id값을 넘겨주어야 한다. todo object 자체를 넘겨도 되고, todo.id만 넘겨도 ok -->
+      </li>
+    </div>
+      `,
+      props: {
+        category: {
+          type: String,
+          required: true
+        }
+      },  // 하위컴포넌트로 데이터 전송
+      data: function() {
+        return{
+          newTodo: '',
+          todos: []
+        }
+      },
+      methods: {
+        addTodo() {
+          this.todos.push({
+            id: Date.now(),
+            content: this.newTodo,
+            completed: false
+          })
+          this.newTodo = ''
+        },
+        removeTodo(removeTodoId) {
+          this.todos = this.todos.filter(todo => {
+            return todo.id !== removeTodoId
+          }) // 같지않은 애들을 모아서 배열로 만들어서 보낸 것!
+        }
+      }
+    })
+  </script>
+  <script>
+    // 루트 오브젝트
+    const app = new Vue({
+      el: '#app',
+      data: {
+        logo: 'http://cafefiles.naver.net/MjAxODAxMjJfMTU5/MDAxNTE2NjI1NDU3Mjc2.yyUZciY4-73pgwVA44QwwwDbG1ezse6PDPPeeS4Ti7Ug.b-w3wSNRMpAQNZG_NhPj9I-rLNmhBd5J89GFCm-V0nEg.JPEG.jjy8097/externalFile.JPG',
+      }
+    })
+  </script>
+</body>
+</html>

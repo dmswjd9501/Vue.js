@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  
+</head>
+<body>
+  <div id="app">
+    <input v-model="number" type="number" min="1" max="9">
+    <button @click="getDogs">GET {{ number }} Dogs!</button>
+    <img v-for="image in images" :src="images" alt="" :key="Date.now()">
+  </div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        images: [],
+        number: 1
+      },
+      methods: {
+        getDogs() {
+          axios.get(`https://dog.ceo/api/breeds/image/random/${this.number}`)
+            .then(response => {
+              this.images.push(response.data.message)
+              
+            })
+        }
+      }
+    })
+  </script>
+</body>
+</html>

@@ -48,6 +48,7 @@
             <option value="active">할 일</option>
             <option value="complete">완료</option>
         </select>
+        
         <li v-for="todo in todosByStatus"
              :class="{completed: todo.completed}"
              :key="todo.id"
@@ -77,6 +78,7 @@
                 color: 'purple',
                 font: '30px',
                 status:'all', // 'active'(false), 'complete'(true)
+                addTodo: '',
                 newTodo: '',
                 logo: 'https://i.pinimg.com/originals/a0/42/c8/a042c8760a95bc2a4f7bd639690b45df.png',
                 todos: [
@@ -110,6 +112,7 @@
                 const date = new Date()
                 this.time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
                 }
+
             },
             computed: {
                 todosByStatus() {
